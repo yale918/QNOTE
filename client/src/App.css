@@ -5,6 +5,20 @@
   font-family:'roboto', sans-serif;
 }
 
+.iniButton{
+  border:0;
+  background-color:#5a8de0;
+  color:#a0bae4;
+  width:90px;
+  height:30px;
+  cursor:pointer;
+}
+.iniButton:hover{
+  color:#5a8de0;
+  background-color:#a0bae4;
+  border:2px #5a8de0 solid
+}
+
 .board li.drag-sort-active {
   opacity: 0.7;
   background:#d6e2e6;
@@ -26,13 +40,25 @@
   background:#c5c5c5;
 }
 
+.box-edit{
+  padding:10px 10px 10px 10px;
+  position:absolute;
+  top:0;
+  right:30px;
+
+}
+.box-edit:hover{
+  background:red
+}
 
 
 .box-close{
   position:absolute;
+  width:30px;
   top:0;
   right:0;
   padding:10px 10px 10px 10px;
+
 }
 .box-close:hover{
   background:red

@@ -1,90 +1,134 @@
-import React,{useState} from 'react'
+import React, { useState, useEffect } from 'react'
+import DBop from './functions/DBop'
+
 
 
 const Note = () => {
 
-  const [Mtext,setText] = useState("")
-  //const [num,setNum] = useState(0)
+  const [Mtext, setText] = useState("first data")
+  const [num, setNum] = useState(0)
+
+  // ** for initialMessage **
+  const [flag, setFlag] = useState(0)
+  let iniData = ["apple", "banana", "cat", "dog", "elephant", "fire", "good", "horse", "ice"]
+  useEffect(() => {
+    if (flag === 0) {
+      HandleBox()
+      document.querySelector('.text').value = ""
+    }
+  })
+  // ************************
 
 
-  const HandleBox = ()=>{
+
+  const HandleBox = () => {
+
 
     //************  CREATE  FUNCTION **********
     //************  DELETE  FUNCTION **********
-    const createBox = () =>{
+    //************  MESSAGEtoSTORAGE  FUNCTION **********
+    const createBox = () => {
+      //Create Box <------------------------------------------------------
       const li = document.createElement('li')
       document.querySelector('.board').appendChild(li)
+      const a = document.createElement('a'); a.innerText = Mtext
 
-  /*
-      const span1 = document.createElement('span');span1.innerText = num
-      setNum(num+1)
-      span1.className = "box-number"
-      li.appendChild(span1)
-  */  
-      const a = document.createElement('a');a.innerText = Mtext
       li.appendChild(a)
-      const span2 = document.createElement('span');span2.innerText = "\u00D7"
-      span2.className = "box-close"
+      a.onclick = (e) => {
+        e.target.contentEditable = "true"
+      }
+      const board = document.querySelector('.board')  //用x 反抓出board
+      const list = Array.from(board.children)// HtmlElement to ArrayList
+      console.log("current: ",list)
+      //*******************************************************************
+      /*
+          const span1 = document.createElement('span');span1.innerText = num
+          console.log(num)
+          setNum(num+1)
+          span1.className = "box-number"
+          li.appendChild(span1)
+      */
+
+      //edit message <--------------------------------------------------------
+      const span2 = document.createElement('span'); span2.innerText = "e"
+      span2.className = "box-edit"
       li.appendChild(span2)
-      //  DELETE FUNCTION 
-      span2.onclick = (e)=>{     
+
+      span2.onclick = (e) => {
+        console.log("edit message")
         const board = e.target.parentNode.parentNode  //用x 反抓出board
-        
+
         let list = Array.from(board.children)// HtmlElement to ArrayList
-        
+
         const deleteTarget = board.childNodes[list.indexOf(e.target.parentNode)] // list.indexOf 先標出deleteTarget
         const parseText = deleteTarget.children[0].innerText // log用: parseText
-        
-        board.removeChild(deleteTarget) // removeChild
-        
-        setTimeout(2000)
-        list = Array.from(board.children) // log用:刪掉後再parse一次array
-        console.log("delete: ",parseText)
-        console.log("Ater: ",list)
-        // ************* DELETE NODE FUNCTION END *************     
+
+        console.log("edit: ", parseText)
+      }
+      // ****************************************************************************
+
+      //delete message <------------------------------------------------------------
+      const span3 = document.createElement('span'); span3.innerText = "\u00D7"
+      span3.className = "box-close"
+      li.appendChild(span3)
+      //  DELETE FUNCTION 
+      span3.onclick = (e) => {
+        const board = e.target.parentNode.parentNode            //用x 反抓出board
+
+        let list = Array.from(board.children)                   // HtmlElement to ArrayList
+
+        const deleteTarget = board.childNodes[list.indexOf(e.target.parentNode)] // list.indexOf 先標出deleteTarget
+        const parseText = deleteTarget.children[0].innerText    // log用: parseText
+
+        board.removeChild(deleteTarget)                         // removeChild
+
+        list = Array.from(board.children)                       // log用:刪掉後再parse一次array
+        console.log("delete: ", parseText)
+        console.log("Ater: ", list)
+        //**********************************************************************     
       }
 
-      
+
     }
     createBox()
 
     //************  DragDrop FUNCTION **********
-    const setDragDrop = ()=>{
+    const setDragDrop = () => {
 
-      const sortList = (name)=>{
- 
+      const sortList = (name) => {
+
         const listCollection = document.querySelector(name).children
         const list = Array.from(listCollection)
-        
-        list.forEach((element)=>{
+
+        list.forEach((element) => {
           enableDragItem(element)
         })
       }
-      const enableDragItem = (element)=>{
-        element.setAttribute('draggable',true)
+      const enableDragItem = (element) => {
+        element.setAttribute('draggable', true)
         element.ondrag = handleDrag
         element.ondragend = handleDrop
       }
-      const handleDrag = (e)=>{
+      const handleDrag = (e) => {
         const item = e.target
-        
+
         item.classList.add('drag-sort-active');
-  
-        const list = item.parentNode 
+
+        const list = item.parentNode
         const x = e.clientX
         const y = e.clientY
-      
-        var swapItem = document.elementFromPoint(x,y)
-      
-        if(swapItem.parentNode === list ){
-          swapItem = swapItem !== item.nextSibling ? swapItem:swapItem.nextSibling
-          list.insertBefore(item,swapItem)
+
+        var swapItem = document.elementFromPoint(x, y)
+
+        if (swapItem.parentNode === list) {
+          swapItem = swapItem !== item.nextSibling ? swapItem : swapItem.nextSibling
+          list.insertBefore(item, swapItem)
         }
       }
-      const handleDrop = (e)=>{
+      const handleDrop = (e) => {
         e.target.classList.remove('drag-sort-active')
       }
-      const start = (classname)=>{
+      const start = (classname) => {
         sortList(classname)
       }
       start('.board')           // function進入點
@@ -92,55 +136,96 @@ const Note = () => {
     }
     setDragDrop()
 
-    
+
+  }
+
+  var db_operation = (op, event, message) => {
+    if (op === "insert") {
+      const message = event.target.value
+      const sql = "INSERT INTO message (name,title,time) VALUES ('yale918','" + message + "',NOW())"
+
+      fetch("/insert", {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sql: sql })
+      })
+        .then(res => res.json())
+        .then(data => { console.log("res from server: ", data) })
+        .catch(err => { console.log("err:", err) })
+    }
+
 
   }
 
 
-
   return (
-    
     <div className="note">
-      <h6>Test</h6>
+      <DBop />
+      <input className="iniButton"
+        type="button"
+        value="TEST PAGE"
+        onClick={(e) => {
+          setFlag(0)
+          setText(iniData[num])
+          setNum(num + 1)
+        }}
+      />
+
       <div className="input">
-        <input 
-        type="text" 
-        placeholder="write" 
-        value={Mtext}
-        className="text" 
-        onChange={(e)=>{
-          setText(e.target.value)
-        }}
-        onKeyDown={(e)=>{
-          if(e.keyCode===13){
-            HandleBox()
-            document.querySelector('.text').value=""
-          }
-        }}
+        <input
+          type="text"
+          placeholder=" write someting..."
+          value={Mtext}
+          className="text"
+          onChange={(e) => {
+            setFlag(1)
+            setText(e.target.value)
+          }}
+          onKeyDown={(e) => {
+            if (e.keyCode === 13) {
+              db_operation("insert", e, Mtext)
+              setFlag(1)
+              HandleBox()
+              document.querySelector('.text').value = ""
+            }
+          }}
 
         />
-        <input 
-        type="button" 
-        value="enter" 
-        className="enter" 
-        onClick = {()=>{
-          //console.log("enter test")
-          //AddBox(Mtext)
-          //createTodo(Mtext)
-        }}
+        <input
+          type="button"
+          value="fetch"
+          className="enter"
+          onClick={(e) => {
+            const message = e.target.value
+            const sql = "INSERT INTO message (name,title,time) VALUES ('yale918','" + { message } + "',NOW())"
+            
+            fetch("/insert", {
+              method: "post",
+              headers: { "Content-Type": "application/json" },
+              //headers:{"Content-Type":"text/html"},
+              //body:JSON.stringify({})
+              body: JSON.stringify({ sql: sql })
+            })
+              .then(res => res.json())
+              .then(data => { console.log(data) })
+              .catch(err => { console.log("err:", err) })
+
+          }}
         />
-        <input 
-        type="button" 
-        value="pic" 
-        className="picture" 
+        <input
+          type="button"
+          value="pic"
+          className="picture"
         />
-        
+
       </div>
 
       <ul className="board"></ul>
     </div>
   )
 }
+
+
 
 export default Note
 
@@ -210,22 +295,22 @@ window.onload = function(){
   setTimeout(2000)
   closeAct()
 }
-  
+
 const initList = ()=>{
   AddNode("yale918");AddNode("athena77");AddNode("cloak")
 }
 
 const AddNode = (message)=>{
-  //create node 
+  //create node
   const li = document.createElement('li')
   const a = document.createElement('a');a.innerText = message
   const span = document.createElement('span');span.innerText = CloseButtonText
   span.className = "close"
   li.appendChild(a)
   li.appendChild(span)
-  
+
   //node bind to tree
-  Todos.appendChild(li) 
+  Todos.appendChild(li)
   //showNode(li);showList() //********************************
 }
 
@@ -234,7 +319,7 @@ const refreshList = ()=>{
     NodeList[i] = Todos.children[i]
 
   }
-  
+
 }
 
 const deleteNode = () => {

@@ -6,69 +6,100 @@ const Note = () => {
   const [Mtext,setText] = useState("")
   //const [num,setNum] = useState(0)
 
-  const createBox = ()=>{
-    const li = document.createElement('li')
-    document.querySelector('.board').appendChild(li)
-/*
-    const span1 = document.createElement('span');span1.innerText = num
-    setNum(num+1)
-    span1.className = "box-number"
-    li.appendChild(span1)
-*/  
-    const a = document.createElement('a');a.innerText = Mtext
-    li.appendChild(a)
 
-    const span2 = document.createElement('span');span2.innerText = "\u00D7"
-    span2.className = "box-close"
-    li.appendChild(span2)
-  
-    ///************  以下Drag Drop API  **********
- 
-    const sortList = (name)=>{
- 
-      const listCollection = document.querySelector(name).children
-      const list = Array.from(listCollection)
-      
-      list.forEach((element)=>{
-        enableDragItem(element)
-      })
-    }
+  const HandleBox = ()=>{
 
-    const enableDragItem = (element)=>{
-      element.setAttribute('draggable',true)
-      element.ondrag = handleDrag
-      element.ondragend = handleDrop
-    }
+    //************  CREATE  FUNCTION **********
+    //************  DELETE  FUNCTION **********
+    const createBox = () =>{
+      const li = document.createElement('li')
+      document.querySelector('.board').appendChild(li)
 
-    const handleDrag = (e)=>{
-      const item = e.target
-      
-      item.classList.add('drag-sort-active');
-
-      const list = item.parentNode 
-      const x = e.clientX
-      const y = e.clientY
-    
-      var swapItem = document.elementFromPoint(x,y)
-    
-      if(swapItem.parentNode === list ){
-        swapItem = swapItem !== item.nextSibling ? swapItem:swapItem.nextSibling
-        list.insertBefore(item,swapItem)
+  /*
+      const span1 = document.createElement('span');span1.innerText = num
+      setNum(num+1)
+      span1.className = "box-number"
+      li.appendChild(span1)
+  */  
+      const a = document.createElement('a');a.innerText = Mtext
+      li.appendChild(a)
+      const span2 = document.createElement('span');span2.innerText = "\u00D7"
+      span2.className = "box-close"
+      li.appendChild(span2)
+      //  DELETE FUNCTION 
+      span2.onclick = (e)=>{     
+        const board = e.target.parentNode.parentNode  //用x 反抓出board
+        
+        let list = Array.from(board.children)// HtmlElement to ArrayList
+        
+        const deleteTarget = board.childNodes[list.indexOf(e.target.parentNode)] // list.indexOf 先標出deleteTarget
+        const parseText = deleteTarget.children[0].innerText // log用: parseText
+        
+        board.removeChild(deleteTarget) // removeChild
+        
+        setTimeout(2000)
+        list = Array.from(board.children) // log用:刪掉後再parse一次array
+        console.log("delete: ",parseText)
+        console.log("Ater: ",list)
+        // ************* DELETE NODE FUNCTION END *************     
       }
-    }
 
-    const handleDrop = (e)=>{
-      e.target.classList.remove('drag-sort-active')
-    }
-    
-    const start = (classname)=>{
-      sortList(classname)
-    }
-    start('.board')
       
+    }
+    createBox()
+
+    //************  DragDrop FUNCTION **********
+    const setDragDrop = ()=>{
+
+      const sortList = (name)=>{
+ 
+        const listCollection = document.querySelector(name).children
+        const list = Array.from(listCollection)
+        
+        list.forEach((element)=>{
+          enableDragItem(element)
+        })
+      }
+      const enableDragItem = (element)=>{
+        element.setAttribute('draggable',true)
+        element.ondrag = handleDrag
+        element.ondragend = handleDrop
+      }
+      const handleDrag = (e)=>{
+        const item = e.target
+        
+        item.classList.add('drag-sort-active');
+  
+        const list = item.parentNode 
+        const x = e.clientX
+        const y = e.clientY
+      
+        var swapItem = document.elementFromPoint(x,y)
+      
+        if(swapItem.parentNode === list ){
+          swapItem = swapItem !== item.nextSibling ? swapItem:swapItem.nextSibling
+          list.insertBefore(item,swapItem)
+        }
+      }
+      const handleDrop = (e)=>{
+        e.target.classList.remove('drag-sort-active')
+      }
+      const start = (classname)=>{
+        sortList(classname)
+      }
+      start('.board')           // function進入點
+
+    }
+    setDragDrop()
+
+    
+
   }
 
+
+
   return (
+    
     <div className="note">
       <div className="input">
         <input 
@@ -81,7 +112,7 @@ const Note = () => {
         }}
         onKeyDown={(e)=>{
           if(e.keyCode===13){
-            createBox()
+            HandleBox()
             document.querySelector('.text').value=""
           }
         }}

@@ -6,10 +6,10 @@ import Note from './components/views/Note'
 import Book from './components/views/Book'
 import Signin from './components/views/Signin'
 //import Home from './components/views/Home'
-import Try from './components/views/Try'
+//import Try from './components/views/Try'
 import Signup from './components/views/Signup'
 import Notetest from './components/views/Notetest'
-
+import Test from './testcode/Test'
 
 const Routing = () => {
   return (
@@ -17,6 +17,9 @@ const Routing = () => {
       <React.Fragment>
         <Route exact path='/'>
           <Notetest />
+        </Route>
+        <Route path='/test'>
+          <Test />
         </Route>
         <Route path='/note'>
           <Note />
@@ -26,9 +29,6 @@ const Routing = () => {
         </Route>
         <Route path='/signin'>
           <Signin />
-        </Route>
-        <Route path='/try'>
-          <Try />
         </Route>
         <Route path='/signup'>
           <Signup />
