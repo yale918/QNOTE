@@ -1,5 +1,5 @@
 const express = require("express");
-const port =3333
+const PORT = process.env.PORT || 3333
 const app = express()
 
 
@@ -13,12 +13,18 @@ app.get('/',(req,res)=>{
     //res.send("hello world");
 })
 
-
 app.get('/test',(req,res)=>{
   console.log("request: /test")
   res.json({data:'message from server'})
 })
 
+if(process.env.NODE_ENV == "production"){
+  app.use(express.static('client/build'))
+  const path = require('path')
+  app.get("*",(req,res)=>{
+    res.sendFile(path.resolve(__dirname,'client','build','index.html'))
+  })
+}
 
 
 /*
@@ -33,6 +39,6 @@ app.get('/test',(req,res)=>{
 app.use(require('./router/test'))
 */
 
-app.listen(port,()=>{
-    console.log("app is starting on: ", port)
+app.listen(PORT,()=>{
+    console.log("app is starting on: ", PORT)
 })
