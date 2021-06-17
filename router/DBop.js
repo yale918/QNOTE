@@ -1,3 +1,4 @@
+/*
 const express = require('express')
 const mysql = require('mysql2')
 const router = express.Router()
@@ -63,11 +64,11 @@ router.post('/insert', (req, res) => {
 
 
 
-/*
+module.exports = router
+
 
 */
 
-module.exports = router
 
 
 /*
