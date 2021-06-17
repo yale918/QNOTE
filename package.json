@@ -1,5 +1,5 @@
 {
-  "name": "qnote",
+  "name": "qterm",
   "version": "1.0.0",
   "description": "a very fast cloud note",
   "main": "app.js",
@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "mysql2": "^2.2.5",
+
     "nodemon": "^2.0.7"
   }
 }
