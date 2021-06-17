@@ -19,8 +19,6 @@ const Note = () => {
   })
   // ************************
 
-
-
   const HandleBox = () => {
 
 
@@ -157,19 +155,11 @@ const Note = () => {
 
   }
 
-
   return (
+
+
     <div className="note">
       <DBop />
-      <input className="iniButton"
-        type="button"
-        value="TEST PAGE"
-        onClick={(e) => {
-          setFlag(0)
-          setText(iniData[num])
-          setNum(num + 1)
-        }}
-      />
 
       <div className="input">
         <input
@@ -221,6 +211,15 @@ const Note = () => {
       </div>
 
       <ul className="board"></ul>
+      <input className="iniButton"
+        type="button"
+        value="Add Message"
+        onClick={(e) => {
+          setFlag(0)
+          setText(iniData[num])
+          setNum(num + 1)
+        }}
+      />
     </div>
   )
 }

@@ -3,7 +3,7 @@
 
 const Book = () => {
     return(
-        `click to lauch QBOOK`
+        `click to lauch chatroom`
     )
 }
 

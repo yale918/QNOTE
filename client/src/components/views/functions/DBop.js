@@ -5,13 +5,11 @@ const DBop = ()=>{
 
 
   return (
-    <div>hello DBop</div>  
+    <div></div>  
   )
+
 }
 
 export default DBop
-
-
-
 
 

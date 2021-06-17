@@ -54,7 +54,7 @@ router.post('/insert', (req, res) => {
     },2000)
  
 
-    db_disconnect()
+    //db_disconnect()
   },2000)
 
 
